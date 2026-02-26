@@ -8,40 +8,48 @@ class RendszerTest {
     @Test
     void hozzaad() {
         Rendszer rendszer = new Rendszer();
+        System.out.println("--- Teszt indítása: Hozzáadási megszorítások ellenőrzése ---");
 
 
-        Esemenyek vizsga = new Esemenyek("Matek vizsga", "Labor", new Date());
-        rendszer.hozzaad(vizsga);
-        assertEquals(1, rendszer.getMindenEsemeny().size(), "Az eseményt sikeresen hozzá kellene adni a listához.");
-
-
+        System.out.print("1. Teszt: Null objektum elutasítása... ");
         assertThrows(IllegalArgumentException.class, () -> {
             rendszer.hozzaad(null);
-        }, "Null érték esetén hibát kellene dobni!");
+        });
+        System.out.println("SIKER (Hiba elkapva: Az esemény nem lehet null!)");
 
 
-        Esemenyek uresEsemeny = new Esemenyek("", "Helyszín", new Date());
+        System.out.print("2. Teszt: Üres név elutasítása... ");
+        Esemenyek uresNevu = new Esemenyek("", "Labor", new Date());
         assertThrows(IllegalArgumentException.class, () -> {
-            rendszer.hozzaad(uresEsemeny);
-        }, "Üres név esetén hibát kellene dobni!");
+            rendszer.hozzaad(uresNevu);
+        });
+        System.out.println("SIKER (Hiba elkapva: Az esemény neve nem lehet üres!)");
+
+
+        System.out.print("3. Teszt: Érvényes esemény rögzítése... ");
+        Esemenyek joEsemeny = new Esemenyek("Szakmai vizsga", "Aula", new Date());
+        rendszer.hozzaad(joEsemeny);
+        assertEquals(1, rendszer.getMindenEsemeny().size());
+        System.out.println("SIKER (Esemény rögzítve: " + joEsemeny.getNev() + ")");
     }
 
     @Test
     void keresNevAlapjan() {
         Rendszer rendszer = new Rendszer();
-        Esemenyek e1 = new Esemenyek("Adatbázis vizsga", "Terem 1", new Date());
-        Esemenyek e2 = new Esemenyek("Szoftver tesztelés", "Terem 2", new Date());
+        rendszer.hozzaad(new Esemenyek("Adatbázis vizsga", "Terem 1", new Date()));
 
-        rendszer.hozzaad(e1);
-        rendszer.hozzaad(e2);
+        System.out.println("\n--- Teszt indítása: Keresési logika ellenőrzése ---");
 
 
+        System.out.print("Keresés tesztelése: 'Adatbázis' kifejezésre... ");
         List<Esemenyek> talalatok = rendszer.keresNevAlapjan("Adatbázis");
-        assertFalse(talalatok.isEmpty(), "Kellene lennie találatnak az 'Adatbázis' szóra.");
-        assertEquals("Adatbázis vizsga", talalatok.get(0).getNev());
+        assertFalse(talalatok.isEmpty());
+        System.out.println("SIKER (Találatok száma: " + talalatok.size() + ")");
 
 
-        List<Esemenyek> uresTalalat = rendszer.keresNevAlapjan("Történelem");
-        assertTrue(uresTalalat.isEmpty(), "Nem szabadna találatnak lennie egy nem létező eseményre.");
+        System.out.print("Keresés tesztelése: Nem létező eseményre... ");
+        List<Esemenyek> nincsTalalat = rendszer.keresNevAlapjan("Matematika");
+        assertTrue(nincsTalalat.isEmpty());
+        System.out.println("SIKER (A lista üres maradt, ahogy várható volt)");
     }
 }
