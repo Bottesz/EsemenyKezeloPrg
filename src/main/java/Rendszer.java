@@ -38,7 +38,7 @@ public class Rendszer {
         return talalatok;
     }
 
-    // 2. Lekérdezési szempont: Keresés helyszín alapján
+
     public List<Esemenyek> keresHelyAlapjan(String keresettHely) {
         List<Esemenyek> talalatok = new ArrayList<>();
         for (Esemenyek e : esemenyLista) {
